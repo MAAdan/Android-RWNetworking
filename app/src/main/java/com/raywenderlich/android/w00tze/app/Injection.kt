@@ -31,11 +31,22 @@
 
 package com.raywenderlich.android.w00tze.app
 
-import com.raywenderlich.android.w00tze.repository.BasicRepository
-import com.raywenderlich.android.w00tze.repository.Repository
-import com.raywenderlich.android.w00tze.repository.StubRepository
+import com.raywenderlich.android.w00tze.repository.*
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 object Injection {
-  fun provideRepository(): Repository = BasicRepository
+    fun provideRepository(): Repository = RemoteRepository
+
+    fun provideRetrofit(): Retrofit {
+        return Retrofit.Builder()
+                .baseUrl("https://api.github.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+    }
+
+    fun provideGitHubApi(): GitHubApi {
+        return provideRetrofit().create(GitHubApi::class.java)
+    }
 }
